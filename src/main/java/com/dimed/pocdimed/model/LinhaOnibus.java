@@ -1,8 +1,27 @@
 package com.dimed.pocdimed.model;
 
-public class LinhaOnibus{
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "LinhasOnibus")
+public class LinhaOnibus implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
     private Integer id;
+	
+	@Column (name = "codigo")
     private String codigo;
+	
+	@Column (name = "nome")
     private String nome;
 
     public LinhaOnibus(Integer id, String codigo, String nome) {

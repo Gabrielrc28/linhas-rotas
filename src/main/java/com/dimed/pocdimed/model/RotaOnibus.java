@@ -1,19 +1,44 @@
 package com.dimed.pocdimed.model;
 
+import java.io.Serializable;
+import java.util.List;
 
-public class RotaOnibus {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "RotasOnibus")
+public class RotaOnibus implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
 	private Integer idlinha;
+	
+	@Column (name = "nome")
 	private String nome;
+	
+	@Column (name = "codigo")
 	private String codigo;
 	
-	public RotaOnibus(Integer idlinha, String nome, String codigo) {
+	@Column (name = "coord")
+	@OneToMany
+	private List<RotaLatLng> coord;
+	
+	public RotaOnibus(Integer idlinha, String nome, String codigo, List<RotaLatLng> coord) {
 		this.idlinha = idlinha;
 		this.nome = nome;
 		this.codigo = codigo;
+		this.coord = coord;
 	}
 	
 	public RotaOnibus() {}
-	
+
 	public Integer getIdlinha() {
 		return idlinha;
 	}
@@ -33,4 +58,13 @@ public class RotaOnibus {
 		this.codigo = codigo;
 	}
 	
+	public void setCoord(List<RotaLatLng> coord)
+	{
+		this.coord = coord;
+	}
+	
+	public List<RotaLatLng> getCoord()
+	{
+		return coord;
+	}
 }
