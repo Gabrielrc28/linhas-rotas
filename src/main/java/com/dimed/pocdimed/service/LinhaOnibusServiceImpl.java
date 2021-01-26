@@ -15,7 +15,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.dimed.pocdimed.model.LinhaOnibus;
+import com.dimed.pocdimed.model.RotaLatLng;
+import com.dimed.pocdimed.model.RotaOnibus;
 import com.dimed.pocdimed.repository.LinhaOnibusRepository;
+import com.dimed.pocdimed.resources.DistanciaEntreDuasCoord;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 @Service
 public class LinhaOnibusServiceImpl implements LinhaOnibusService{
@@ -118,4 +123,33 @@ public class LinhaOnibusServiceImpl implements LinhaOnibusService{
 		linhaOnibusRepository.deleteById(id);
 	}
 	
+	@Autowired
+	RotaOnibusService rotaOnibusService;
+	
+	@Override
+	public Collection <LinhaOnibus> filtraLinhaPorRaio(Double lat1, Double lng1, Double dist) throws JsonMappingException, JsonProcessingException
+	{	
+		DistanciaEntreDuasCoord distanciaEntreDuasCoord = new DistanciaEntreDuasCoord();
+		List<LinhaOnibus> linhasBuffer = new ArrayList<>();
+		List<LinhaOnibus> linhas = new ArrayList<>();
+		
+		RotaOnibus rotaOnibus = new RotaOnibus();
+		
+		linhasBuffer = (List<LinhaOnibus>) getAllLinhas();
+		
+		for(int i = 0; i <linhasBuffer.size(); i++)
+		{
+			rotaOnibus = rotaOnibusService.getRotasById(linhasBuffer.get(i).getId());
+			List<RotaLatLng> coord = rotaOnibus.getCoord();
+			for(RotaLatLng latLng : coord)
+			{
+				if(distanciaEntreDuasCoord.calcula(lat1, lng1, latLng.getLat(), latLng.getLng(), dist))
+				{
+					linhas.add(linhasBuffer.get(i));
+					break;
+				}
+			}
+		}
+		return linhas;
+	}
 }

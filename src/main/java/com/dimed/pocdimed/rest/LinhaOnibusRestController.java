@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dimed.pocdimed.model.LinhaOnibus;
 import com.dimed.pocdimed.service.LinhaOnibusService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -79,4 +81,18 @@ public class LinhaOnibusRestController {
 
         return  new ResponseEntity<LinhaOnibus>(linha, HttpStatus.OK);
     }
+    
+    @RequestMapping(value ="/teste", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<Collection<LinhaOnibus>> filtraLinhaPorRaio() throws JsonMappingException, JsonProcessingException{
+    	List<LinhaOnibus> linhas = new ArrayList<>();
+    	
+    	Double lat1 = -30.02777157701300000;
+    	Double lng1 = -51.22692810954200000;
+    	Double dist = 1000000000000000.0;
+    	
+    	linhas.addAll(this.linhaOnibusService.filtraLinhaPorRaio(lat1, lng1, dist));
+    	
+    	return  new ResponseEntity<Collection<LinhaOnibus>>(linhas, HttpStatus.OK);
+    }
+    
 }
