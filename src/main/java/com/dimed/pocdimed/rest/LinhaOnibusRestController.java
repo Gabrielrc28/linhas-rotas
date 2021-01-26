@@ -1,19 +1,16 @@
 package com.dimed.pocdimed.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import com.dimed.pocdimed.model.LinhaOnibus;
+import com.dimed.pocdimed.service.LinhaOnibusService;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,47 +20,63 @@ import java.util.List;
 @RestController
 @RequestMapping("/linhas")
 public class LinhaOnibusRestController {
-
+    
     @Autowired
-    private RestTemplate restTemplate;
+    private LinhaOnibusService linhaOnibusService;
     
-    private String linkLinhas = "http://www.poatransporte.com.br/php/facades/process.php?a=nc&p=%&t=o";
-    
-    @SuppressWarnings("unchecked")
 	@RequestMapping(value ="", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Collection<LinhaOnibus>> getAllLinhas(){
 
         List<LinhaOnibus> linhas = new ArrayList<>();
 
-        linhas.addAll(restTemplate.getForObject(linkLinhas, Collection.class));
+        linhas.addAll(this.linhaOnibusService.getAllLinhas());
         
         return  new ResponseEntity<Collection<LinhaOnibus>>(linhas, HttpStatus.OK);
     }
            
     @RequestMapping(value ="/nome", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Collection<LinhaOnibus>> getLinhasByName(@RequestParam(name = "name") String name){
-    	
-    	name = name.toUpperCase();
-    	
-        List<LinhaOnibus> linhas = new ArrayList<>();
+
         List<LinhaOnibus> byNome = new ArrayList<>();
         
-        HttpHeaders headers = new HttpHeaders();
-        LinhaOnibus linhaOnibus = new LinhaOnibus();
-        
-        HttpEntity<LinhaOnibus> entity = new HttpEntity<LinhaOnibus>(linhaOnibus, headers);
+        byNome.addAll(this.linhaOnibusService.getLinhasByName(name));
 
-        ResponseEntity<List<LinhaOnibus>> result = restTemplate.exchange(linkLinhas, HttpMethod.GET, entity, new ParameterizedTypeReference<List<LinhaOnibus>>() {});
-        
-        linhas.addAll(result.getBody());
-        
-        for(int i = 0; i < linhas.size(); i++)
-        {
-        	if(linhas.get(i).getNome().contains(name))
-        	{
-        		byNome.add(linhas.get(i));
-        	}
-        }
         return  new ResponseEntity<Collection<LinhaOnibus>>(byNome, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/bd/inserir_linha", method = RequestMethod.POST, produces = "application/json")
+    public ResponseEntity<LinhaOnibus> insertLinha(@RequestBody LinhaOnibus linha){
+
+        linhaOnibusService.insertLinha(linha);
+        
+        return  new ResponseEntity<LinhaOnibus>(linha, HttpStatus.CREATED);
+    }
+    
+    @RequestMapping(value = "/bd/linhas", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<Collection<LinhaOnibus>> findAllLinhas(){
+
+    	List<LinhaOnibus> linhas = new ArrayList<>();
+
+        linhas.addAll(this.linhaOnibusService.findAllLinhas());
+        
+        return  new ResponseEntity<Collection<LinhaOnibus>>(linhas, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value ="/bd/deletar_linha/id", method = RequestMethod.DELETE, produces = "application/json")
+    public ResponseEntity<LinhaOnibus> deleteLinhaById(@RequestParam(name = "id") Integer id){
+
+    	this.linhaOnibusService.deleteLinhaById(id);
+    	
+        return  new ResponseEntity<LinhaOnibus>(HttpStatus.OK);
+    }
+    
+    @RequestMapping(value ="/bd/id", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<LinhaOnibus> getLinhasById(@RequestParam(name = "id") Integer id){
+
+        LinhaOnibus linha = new LinhaOnibus();
+        
+        linha = this.linhaOnibusService.getLinhaById(id);
+
+        return  new ResponseEntity<LinhaOnibus>(linha, HttpStatus.OK);
     }
 }

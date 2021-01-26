@@ -8,4 +8,12 @@ public interface LinhaOnibusService {
 	Collection<LinhaOnibus> getAllLinhas();
 	
 	Collection<LinhaOnibus> getLinhasByName(String name);
+	
+	void insertLinha (LinhaOnibus linha);
+	
+	Collection <LinhaOnibus> findAllLinhas();
+	
+	void deleteLinhaById(Integer id);
+	
+	LinhaOnibus getLinhaById (Integer id);
 }
