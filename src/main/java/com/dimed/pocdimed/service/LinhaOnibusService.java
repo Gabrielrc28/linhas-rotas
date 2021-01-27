@@ -19,5 +19,5 @@ public interface LinhaOnibusService {
 	
 	LinhaOnibus getLinhaById (Integer id);
 	
-	Collection <LinhaOnibus> filtraLinhaPorRaio(Double lat1, Double lng1, Double dist) throws JsonMappingException, JsonProcessingException;
+	Collection <LinhaOnibus> filtraLinhaPorRaio(Double lat1, Double lng1, Double dist) throws JsonMappingException, JsonProcessingException, InterruptedException;
 }

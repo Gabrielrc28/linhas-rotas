@@ -14,6 +14,10 @@ import com.dimed.pocdimed.service.RotaOnibusService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
+@Api
 @RestController
 @RequestMapping("/rota")
 public class RotaOnibusController {
@@ -21,6 +25,7 @@ public class RotaOnibusController {
 	@Autowired
     private RotaOnibusService rotaOnibusService;
 	
+	@ApiOperation("Retorna as rotas por ID, que estão na datapoa API.")
 	@RequestMapping(value ="/id", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<RotaOnibus> getRotasById(@RequestParam(name = "id") Integer id) throws JsonMappingException, JsonProcessingException{
     	
@@ -29,6 +34,7 @@ public class RotaOnibusController {
 		return  new ResponseEntity<RotaOnibus>(rotaOnibus, HttpStatus.OK);
     }
 	
+	@ApiOperation("Retorna as rotas por ID, que estão no banco local.")
 	@RequestMapping(value ="/db/id", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<RotaOnibus> getRotaById(@RequestParam(name = "id") Integer id){
     	
@@ -37,6 +43,7 @@ public class RotaOnibusController {
 		return  new ResponseEntity<RotaOnibus>(rotaOnibus, HttpStatus.OK);
     }
 	
+	@ApiOperation("Insere uma nova rota no banco local.")
 	@RequestMapping(value ="/db/inserir_rota", method = RequestMethod.POST, produces = "application/json")
     public ResponseEntity<RotaOnibus> insertRota(@RequestBody RotaOnibus rotaOnibus){
     			
@@ -45,6 +52,7 @@ public class RotaOnibusController {
 		return  new ResponseEntity<RotaOnibus>(HttpStatus.OK);
     }
 	
+	@ApiOperation("Deleta uma rota, por ID no banco local.")
 	@RequestMapping(value ="/db/deletar_rota/id", method = RequestMethod.DELETE, produces = "application/json")
     public ResponseEntity<RotaOnibus> deleteRotaById(@RequestParam(name = "id") Integer id){
     	

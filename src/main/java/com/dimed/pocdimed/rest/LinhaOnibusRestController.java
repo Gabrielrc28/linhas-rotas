@@ -14,18 +14,21 @@ import com.dimed.pocdimed.service.LinhaOnibusService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
+@Api
 @RestController
 @RequestMapping("/linhas")
 public class LinhaOnibusRestController {
     
     @Autowired
     private LinhaOnibusService linhaOnibusService;
-    
+    @ApiOperation("Pega todas as linhas de onibus que estão na datapoa API.")
 	@RequestMapping(value ="", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Collection<LinhaOnibus>> getAllLinhas(){
 
@@ -35,7 +38,8 @@ public class LinhaOnibusRestController {
         
         return  new ResponseEntity<Collection<LinhaOnibus>>(linhas, HttpStatus.OK);
     }
-           
+    
+    @ApiOperation("Retorna as linhas por nome consultando a datapoa API.")
     @RequestMapping(value ="/nome", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Collection<LinhaOnibus>> getLinhasByName(@RequestParam(name = "name") String name){
 
@@ -46,6 +50,7 @@ public class LinhaOnibusRestController {
         return  new ResponseEntity<Collection<LinhaOnibus>>(byNome, HttpStatus.OK);
     }
     
+    @ApiOperation("Insere uma linha no banco, respeitando as regras da parte 3.")
     @RequestMapping(value = "/bd/inserir_linha", method = RequestMethod.POST, produces = "application/json")
     public ResponseEntity<LinhaOnibus> insertLinha(@RequestBody LinhaOnibus linha){
 
@@ -54,6 +59,7 @@ public class LinhaOnibusRestController {
         return  new ResponseEntity<LinhaOnibus>(linha, HttpStatus.CREATED);
     }
     
+    @ApiOperation("Retorna todas as linhas cadastradas no banco.")
     @RequestMapping(value = "/bd/linhas", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<Collection<LinhaOnibus>> findAllLinhas(){
 
@@ -64,6 +70,7 @@ public class LinhaOnibusRestController {
         return  new ResponseEntity<Collection<LinhaOnibus>>(linhas, HttpStatus.OK);
     }
     
+    @ApiOperation("Deleta uma linha por ID no banco.")
     @RequestMapping(value ="/bd/deletar_linha/id", method = RequestMethod.DELETE, produces = "application/json")
     public ResponseEntity<LinhaOnibus> deleteLinhaById(@RequestParam(name = "id") Integer id){
 
@@ -72,6 +79,7 @@ public class LinhaOnibusRestController {
         return  new ResponseEntity<LinhaOnibus>(HttpStatus.OK);
     }
     
+    @ApiOperation("Retorna do banco uma linha filtrada por um ID.")
     @RequestMapping(value ="/bd/id", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<LinhaOnibus> getLinhasById(@RequestParam(name = "id") Integer id){
 
@@ -82,17 +90,13 @@ public class LinhaOnibusRestController {
         return  new ResponseEntity<LinhaOnibus>(linha, HttpStatus.OK);
     }
     
-    @RequestMapping(value ="/teste", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<Collection<LinhaOnibus>> filtraLinhaPorRaio() throws JsonMappingException, JsonProcessingException{
+    @ApiOperation("Dado uma cordenada e um raio, a api retorna todas as rotas que passam nesse raio.")
+    @RequestMapping(value ="/filtra", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<Collection<LinhaOnibus>> filtraLinhaPorRaio(@RequestParam(name = "lat") Double lat1, @RequestParam(name = "lng") Double lng1, @RequestParam(name = "dist") Double dist) throws JsonMappingException, JsonProcessingException, InterruptedException{
     	List<LinhaOnibus> linhas = new ArrayList<>();
-    	
-    	Double lat1 = -30.02777157701300000;
-    	Double lng1 = -51.22692810954200000;
-    	Double dist = 1000000000000000.0;
     	
     	linhas.addAll(this.linhaOnibusService.filtraLinhaPorRaio(lat1, lng1, dist));
     	
     	return  new ResponseEntity<Collection<LinhaOnibus>>(linhas, HttpStatus.OK);
     }
-    
 }

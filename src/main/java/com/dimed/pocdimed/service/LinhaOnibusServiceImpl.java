@@ -92,7 +92,7 @@ public class LinhaOnibusServiceImpl implements LinhaOnibusService{
 			return linha.get();
 		}
 	}
-	
+	//Meu create ficou com um update embutido 
 	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	public void insertLinha (LinhaOnibus linha)
@@ -127,7 +127,7 @@ public class LinhaOnibusServiceImpl implements LinhaOnibusService{
 	RotaOnibusService rotaOnibusService;
 	
 	@Override
-	public Collection <LinhaOnibus> filtraLinhaPorRaio(Double lat1, Double lng1, Double dist) throws JsonMappingException, JsonProcessingException
+	public Collection <LinhaOnibus> filtraLinhaPorRaio(Double lat1, Double lng1, Double dist) throws JsonMappingException, JsonProcessingException, InterruptedException
 	{	
 		DistanciaEntreDuasCoord distanciaEntreDuasCoord = new DistanciaEntreDuasCoord();
 		List<LinhaOnibus> linhasBuffer = new ArrayList<>();
@@ -140,6 +140,7 @@ public class LinhaOnibusServiceImpl implements LinhaOnibusService{
 		for(int i = 0; i <linhasBuffer.size(); i++)
 		{
 			rotaOnibus = rotaOnibusService.getRotasById(linhasBuffer.get(i).getId());
+			Thread.sleep(100);
 			List<RotaLatLng> coord = rotaOnibus.getCoord();
 			for(RotaLatLng latLng : coord)
 			{

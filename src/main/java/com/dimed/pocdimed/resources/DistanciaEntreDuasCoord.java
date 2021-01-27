@@ -7,7 +7,8 @@ public class DistanciaEntreDuasCoord {
 		
 		aux = ((lng2 - lng1) * (lng2 - lng1)) + ((lat2 - lat1) * (lat2 - lat1));
 		aux = Math.sqrt(aux);
-		System.out.println(aux + "KKKKKKKKKKKKKKKKKKKKKKKKKKKK");
+		aux = aux * 100.0;
+		
 		if(aux <= dist)
 		{
 			return true;
